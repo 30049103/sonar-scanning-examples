@@ -43,3 +43,4 @@ jobs:
 #         login: ${{ secrets.SONARQUBE_TOKEN }}
       run: .\gradlew.bat sonarqube -Dsonar.projectKey=sonarqube-scanner-test1 -Dsonar.host.url=http://10.14.2.69:9000 -Dsonar.login=f9a2ab79ed547c4ef09161fb4d6a98a9c95c23e9
       #ここを変数で記載にできないか
+      
