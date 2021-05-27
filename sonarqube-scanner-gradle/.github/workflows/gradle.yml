@@ -1,0 +1,45 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [closed,assigned,opend,reopend] #さらにtypeを指定できる
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: [self-hosted, windows, x64] #ubuntu-latest　[self-hosted, linux, x64]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11' #'16'
+        distribution: 'adopt'
+    - name: Grant execute permission for gradlew
+      run: ICACLS gradlew /grant:r "users:(RX)"  #chmod +x gradlew #
+    - name: Build with Gradle
+      run: ./gradlew build
+      
+
+  SonarQube_on_windows2016: #buildもself-hosted, run:をICACLSに変更
+  
+    runs-on: [self-hosted, windows, x64]
+    needs: ["build"]
+    
+    steps:
+    - name: SonarQubeTrigger
+      uses: actions/checkout@master
+    - name: SonarQube Scan
+#       uses: kitabisa/sonarqube-action@master
+#       with:
+#         host: ${{ secrets.SONARQUBE_HOST }}
+#         login: ${{ secrets.SONARQUBE_TOKEN }}
+      run: .\gradlew.bat sonarqube -Dsonar.projectKey=sonarqube-scanner-test1 -Dsonar.host.url=http://10.14.2.69:9000 -Dsonar.login=f9a2ab79ed547c4ef09161fb4d6a98a9c95c23e9
+      #ここを変数で記載にできないか
